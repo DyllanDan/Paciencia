@@ -1,3 +1,5 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +21,6 @@ public class Deck
 
     public void addCard(Card card)
     {
-        //if size > 13, throw condition
         cards.add(card);
         size++;
     }
@@ -52,11 +53,18 @@ public class Deck
 
     public int getSize()
     {
+        size = cards.size();
         return size;
+    }
+
+    public void setSize(int newSize)
+    {
+        size = newSize;
     }
 
     public Card drawTop()
     {
+        size--;
         return cards.pollFirst();
     }
 
@@ -67,15 +75,28 @@ public class Deck
 
     public LinkedList<Card> getCards()
     {
-        return cards;
+        if (size > 0)
+            return cards;
+        else
+            return (new LinkedList<>());
     }
 
     public String lastCardNum()
     {
-        ListIterator<Card> iterator = cards.listIterator(this.size);
+        Card last = null;
+        for (Card card : cards)
+            last = card;
 
-        Card lastCard = iterator.previous();
+        if (last != null)
+            return (last.getNumber());
+        else
+            return ("");
+    }
 
-        return (lastCard.getNumber());
+    public void showLastCard()
+    {
+        Card last = cards.getLast();
+        if (last.showFace == false)
+            last.flipFace();
     }
 }

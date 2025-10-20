@@ -2,7 +2,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Iterator;
-import javax.lang.model.util.ElementScanner14;
+import java.util.LinkedList;
+
 
 public class SetDecks extends Deck
 {
@@ -60,7 +61,11 @@ public class SetDecks extends Deck
                 placeIn = deckSet;
             i++;
         }
-        String refNumber = placeIn.lastCardNum();
+        String refNumber;
+        if (placeIn == null)
+            refNumber = "";
+        else
+            refNumber = placeIn.lastCardNum();
         int auxRefNum;
         if (refNumber.equals("A"))
             auxRefNum = 0;
@@ -70,13 +75,19 @@ public class SetDecks extends Deck
             auxRefNum = 12;
         else if (refNumber.equals("K"))
             auxRefNum = 13;
+        else if (refNumber.equals(""))
+            return ;
         else
         {
             auxRefNum = Integer.parseInt(refNumber);
         }
         int startIndex = 0;
         int endIndex = 0;
-        List<Card> deckItr = moveFrom.getCards();
+        List<Card> deckItr;
+        if (moveFrom == null)
+            deckItr = new LinkedList<>();
+        else
+            deckItr = moveFrom.getCards();
         for(Card card : deckItr)
         {
             int auxNum;
@@ -92,15 +103,25 @@ public class SetDecks extends Deck
             {
                 auxNum = Integer.parseInt(card.getNumber());
             }
-            if (auxRefNum < auxNum)
+            if (card.showFace == false)
+                startIndex++;
+            else if (auxRefNum < auxNum)
                 startIndex++;
             endIndex++;
         }
         List<Card> cards = moveFrom.getCards(); // método getter que retorna a lista interna
         List<Card> movingCards = new ArrayList<>(cards.subList(startIndex, endIndex));
         cards.subList(startIndex, endIndex).clear();
-        for (Card c : movingCards) {
+        if (moveFrom.getSize() > 0)
+            moveFrom.showLastCard();
+        for (Card c : movingCards) 
+        {
             placeIn.addCard(c);
-}
+        }
+    }
+
+    public List<Deck> getSetDecks()
+    {
+        return playableDeck;
     }
 }

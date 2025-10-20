@@ -3,19 +3,19 @@ public class Card
 {
     protected String number;
     protected String suit;
-    int showFace;
+    boolean showFace;
 
 
     public Card(String number, String suit)
     {
         this.number = number;
         this.suit = suit;
-        this.showFace = 1;
+        this.showFace = true;
     }
 
     public void printFace()
     {
-        if (showFace == 1)
+        if (showFace == true)
             System.out.printf("(%s %s)", number, suit);
         else
             System.out.printf("(*)");
@@ -33,11 +33,16 @@ public class Card
 
     public void hideFace()
     {
-        this.showFace = 0;
+        this.showFace = false;
     }
 
     public void showFace()
     {
-        this.showFace = 1;
+        this.showFace = true;
+    }
+
+    public void flipFace()
+    {
+        showFace = !showFace;
     }
 }
