@@ -15,6 +15,7 @@ public class Test
         newDeck.createFullDeck();
         newDeck.shuffledDeck();
         newSet.createSet(newDeck);
+        System.out.println("----------Paciência sem GUI----------");
         while (true)
         {
             newSet.showSets();
