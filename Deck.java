@@ -41,29 +41,31 @@ public class Deck
         String[] suits = {"Hearts", "Dimonds", "Clubs", "Spades"};
         String[] numbers = {"A", "2", "3", "4", "5", "6", "7", "8",
                             "9", "10", "J", "Q", "K"};
+        int value;
         for (String suit : suits)
         {
+            value = 1;
             for (String num : numbers)
             {
-                Card card = new Card(num, suit);
+                Card card = new Card(num, suit, value);
                 addCard(card);
+                value++;
             }
         }
     }
 
+
     public int getSize()
     {
-        size = cards.size();
-        return size;
+        return cards.size();
     }
 
-    public void setSize(int newSize)
+    public Card drawTop() //must use try-catch when called
     {
-        size = newSize;
-    }
-
-    public Card drawTop()
-    {
+        if (cards == null)
+            throw new IllegalStateException("Deck not initialized: cards is null.");
+        if (size <= 0)
+            throw new IllegalStateException("Deck is empty.");
         size--;
         return cards.pollFirst();
     }
@@ -75,22 +77,37 @@ public class Deck
 
     public LinkedList<Card> getCards()
     {
-        if (size > 0)
-            return cards;
-        else
-            return (new LinkedList<>());
+        try 
+        {
+            if (cards == null) 
+            {
+                throw new IllegalStateException("Deck not initialized: cards is null.");
+            }
+            if (size < 0) 
+            {
+                throw new IllegalStateException("Invalid deck size: " + size);
+            }
+            if (size > 0)
+                return cards;
+            else
+                return new LinkedList<>();
+        } 
+        catch (IllegalStateException exc) 
+        {
+            System.err.println("[ERRO] " + exc.getMessage());
+            return new LinkedList<>();
+        }
     }
 
-    public String lastCardNum()
+    public int lastCardNum()
     {
-        Card last = null;
-        for (Card card : cards)
-            last = card;
-
-        if (last != null)
-            return (last.getNumber());
+        if (cards == null || cards.isEmpty())
+            return (0);
+        Card last = cards.getLast();
+        if (last.getValue() != 0)
+            return (last.getValue());
         else
-            return ("");
+            return(0);
     }
 
     public void showLastCard()
@@ -99,4 +116,21 @@ public class Deck
         if (last.showFace == false)
             last.flipFace();
     }
+
+    public int refCard()
+    {
+        if (cards == null || cards.isEmpty())
+            return (0);
+        return (lastCardNum());
+    }
 }
+
+/*public int getCardValue(String num) {
+    return switch (num) {
+        case "A" -> 1;
+        case "J" -> 11;
+        case "Q" -> 12;
+        case "K" -> 13;
+        default -> Integer.parseInt(num);
+    };
+} */

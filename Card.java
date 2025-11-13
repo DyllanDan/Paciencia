@@ -2,14 +2,16 @@
 public class Card
 {
     protected String number;
+    protected int value;
     protected String suit;
     boolean showFace;
 
 
-    public Card(String number, String suit)
+    public Card(String number, String suit, int value)
     {
         this.number = number;
         this.suit = suit;
+        this.value = value;
         this.showFace = true;
     }
 
@@ -29,6 +31,11 @@ public class Card
     public String getNumber()
     {
         return number;
+    }
+
+    public int getValue()
+    {
+        return value;
     }
 
     public void hideFace()

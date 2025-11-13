@@ -3,6 +3,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Iterator;
 import java.util.LinkedList;
+import javax.lang.model.util.ElementScanner14;
 
 
 public class SetDecks extends Deck
@@ -38,11 +39,13 @@ public class SetDecks extends Deck
     public void showSets()
     {
         Iterator<Deck> setIterator = playableDeck.iterator();
+        int i = 1;
 
         while (setIterator.hasNext())
         {
             Deck indexDeck = setIterator.next();
-
+            System.out.printf("%d|  ", i);
+            i++;
             indexDeck.printDeck();
             System.out.printf("%n");
         }
@@ -61,54 +64,52 @@ public class SetDecks extends Deck
                 placeIn = deckSet;
             i++;
         }
-        String refNumber;
-        if (placeIn == null)
-            refNumber = "";
+        
+        int refNumber;
+        if (placeIn != null)
+            refNumber = placeIn.refCard();
         else
-            refNumber = placeIn.lastCardNum();
-        int auxRefNum;
-        if (refNumber.equals("A"))
-            auxRefNum = 0;
-        else if (refNumber.equals("J"))
-            auxRefNum = 11;
-        else if (refNumber.equals("Q"))
-            auxRefNum = 12;
-        else if (refNumber.equals("K"))
-            auxRefNum = 13;
-        else if (refNumber.equals(""))
-            return ;
-        else
-        {
-            auxRefNum = Integer.parseInt(refNumber);
-        }
+            refNumber = 0;
+        if (refNumber != 0)
+            moveDecks(moveFrom, placeIn, refNumber);
+    }
+
+    public List<Deck> getSetDecks()
+    {
+        return playableDeck;
+    }
+
+    public void moveDecks(Deck moveFrom, Deck placeIn, int refNumber)
+    {
         int startIndex = 0;
         int endIndex = 0;
-        List<Card> deckItr;
+        int aux = 0;
+        LinkedList<Card> deckItr;
         if (moveFrom == null)
             deckItr = new LinkedList<>();
         else
             deckItr = moveFrom.getCards();
-        for(Card card : deckItr)
+        aux = moveFrom.getSize() - 1;
+        startIndex = aux;
+        int currentValue = 0;
+        while(aux >= 0)
         {
-            int auxNum;
-            if (card.getNumber().equals("A"))
-                auxNum = 0;
-            else if (card.getNumber().equals("J"))
-                auxNum = 11;
-            else if (card.getNumber().equals("Q"))
-                auxNum = 12;
-            else if (card.getNumber().equals("K"))
-                auxNum = 13;
-            else
+            Card card = deckItr.get(aux);
+            int auxNum = card.getValue();
+            if (card.showFace == false || currentValue >= auxNum)
+                break ;
+            else if (refNumber > auxNum)
             {
-                auxNum = Integer.parseInt(card.getNumber());
+                startIndex--;
+                currentValue = auxNum;
             }
-            if (card.showFace == false)
-                startIndex++;
-            else if (auxRefNum < auxNum)
-                startIndex++;
-            endIndex++;
+            else
+                break ;
+            aux--;
         }
+        endIndex = moveFrom.getSize();
+        if (startIndex == endIndex)
+            return ;
         List<Card> cards = moveFrom.getCards(); // método getter que retorna a lista interna
         List<Card> movingCards = new ArrayList<>(cards.subList(startIndex, endIndex));
         cards.subList(startIndex, endIndex).clear();
@@ -118,10 +119,5 @@ public class SetDecks extends Deck
         {
             placeIn.addCard(c);
         }
-    }
-
-    public List<Deck> getSetDecks()
-    {
-        return playableDeck;
     }
 }

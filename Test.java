@@ -2,7 +2,7 @@ import java.util.Set;
 import java.util.Scanner;
 import java.util.Iterator;
 
-public class Test 
+public class Test
 {
     public static void main(String[] args) 
     {
