@@ -96,8 +96,14 @@ public class SetDecks extends Deck
         {
             Card card = deckItr.get(aux);
             int auxNum = card.getValue();
-            if (card.showFace == false || currentValue >= auxNum)
+            if (card.showFace == false)
+            {
                 break ;
+            }
+            else if (auxNum >= currentValue && auxNum > refNumber)
+            {
+                break ;
+            }
             else if (refNumber > auxNum)
             {
                 startIndex--;
@@ -108,8 +114,6 @@ public class SetDecks extends Deck
             aux--;
         }
         endIndex = moveFrom.getSize();
-        if (startIndex == endIndex)
-            return ;
         List<Card> cards = moveFrom.getCards(); // método getter que retorna a lista interna
         List<Card> movingCards = new ArrayList<>(cards.subList(startIndex, endIndex));
         cards.subList(startIndex, endIndex).clear();
