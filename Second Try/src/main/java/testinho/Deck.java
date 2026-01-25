@@ -1,13 +1,6 @@
 package testinho;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.LinkedList;
-import java.util.Iterator;
-import javafx.scene.image.Image;
 
 public class Deck 
 {
@@ -65,10 +58,6 @@ public class Deck
             {
                 throw new IllegalStateException("Deck not initialized: cards is null.");
             }
-            if (cards.isEmpty()) 
-            {
-                throw new IllegalStateException("Invalid deck size: " + size);
-            }
             if (!cards.isEmpty())
                 return cards;
             else
@@ -104,5 +93,17 @@ public class Deck
         if (cards == null || cards.isEmpty())
             return (0);
         return (lastCardNum());
+    }
+
+    public boolean acceptMoveCard(Card toPlace)
+    {
+        Card last = cards.getLast();
+
+        if (this.size == 0)
+            return (true);
+        if (last.getValue() > toPlace.getValue())
+            return (true);
+        else
+            return (false);
     }
 }

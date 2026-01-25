@@ -10,6 +10,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 
 public class GameEventManager 
 {
@@ -68,9 +69,9 @@ public class GameEventManager
 
                 moveCardsLogic(setDecks, originColIdx, originCardIdx, placeColIdx);
                 Platform.runLater(() -> {
-                root.getChildren().clear();
-                Render renderer = new Render(root, manager);
-                renderer.renderGame(setDecks, fullDeck);
+                    root.getChildren().clear();
+                    Render renderer = new Render(root, manager);
+                    renderer.renderGame(setDecks, fullDeck);
                 });
                 root.getChildren().clear();
                 event.setDropCompleted(true);
@@ -83,19 +84,23 @@ public class GameEventManager
     {
         Deck origin = allSet.getSetDecks().get(originCol);
         Deck place = allSet.getSetDecks().get(placeCol);
+        Card refCard = origin.getCards().get(originCard);
 
-        List<Card> toMove = new ArrayList<>(origin.getCards().subList(originCard, origin.getSize()));
 
-        origin.getCards().removeAll(toMove);
-
-        for (Card card : toMove)
+        if (place.getSize() == 0 || place.acceptMoveCard(refCard))
         {
-            place.addCard(card);
-        }
-
-        if (!origin.getCards().isEmpty())
-        {
-            origin.getCards().getLast().showFace();
+            List<Card> toMove = new ArrayList<>(origin.getCards().subList(originCard, origin.getSize()));
+            origin.getCards().removeAll(toMove);
+    
+            for (Card card : toMove)
+            {
+                place.addCard(card);
+            }
+    
+            if (!origin.getCards().isEmpty())
+            {
+                origin.getCards().getLast().showFace();
+            }
         }
     }
 
@@ -114,6 +119,35 @@ public class GameEventManager
             root.getChildren().clear();
             renderer.renderGame(setDecks, fullDeck);
             event.consume();
+        });
+    }
+
+    public void setupAnchorEvents(Rectangle anchor, int i, SetDecks setDeck, Pane root, Render renderer, Deck fullDeck)
+    {
+        anchor.setOnDragOver(event -> {
+        if (event.getGestureSource() != anchor && event.getDragboard().hasString()) {
+                    event.acceptTransferModes(TransferMode.MOVE);
+                }
+        event.consume();
+        });
+
+        anchor.setOnDragDropped(event -> {        
+        Dragboard db = event.getDragboard();
+        if (db.hasString()) 
+        {
+            String[] data = db.getString().split(":");
+            int originColIdx = Integer.parseInt(data[0]);
+            int originCardIdx = Integer.parseInt(data[1]);
+
+            moveCardsLogic(setDeck, originColIdx, originCardIdx, i);
+
+            Platform.runLater(() -> {
+                renderer.renderGame(setDeck, fullDeck);
+            });
+            
+            event.setDropCompleted(true);
+        }
+        event.consume();
         });
     }
 }

@@ -3,6 +3,8 @@ import java.util.List;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class Render 
 {
@@ -27,9 +29,19 @@ public class Render
         List<Deck> allColumns = setDeck.getSetDecks();
         for (int i = 0; i < allColumns.size(); i++)
         {
+            Rectangle anchor = new Rectangle(72, 100); 
+            anchor.setX(startX + (i * xSpace));
+            anchor.setY(startY);
+            anchor.setFill(Color.WHITE);
+            anchor.setStroke(Color.WHITE);
+            anchor.setStrokeWidth(0.5);
+            anchor.getStrokeDashArray().addAll(5.0, 5.0);
+            eventManager.setupAnchorEvents(anchor, i, setDeck, root, this, fullDeck);
+        
+            root.getChildren().add(anchor);
+
             Deck currentDeckCol = allColumns.get(i);
             List<Card> cardsInCol = currentDeckCol.getCards();
-
             for (int j = 0; j < cardsInCol.size(); j++)
             {
                 Card card  = cardsInCol.get(j);
